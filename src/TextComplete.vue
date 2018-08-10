@@ -9,6 +9,7 @@
               :placeholder="placeholder"
               :rows="rows"
               :name="name"
+              @blur="handleBlur"
               @focus="handleFocus"
               @keydown="keyEvent"
               @keyup="keyUp"></textarea>
@@ -99,6 +100,11 @@ export default {
   methods: {
     handleFocus(event) {
       this.$emit('focus', event)
+    },
+    handleBlur(event) {
+      let autocomplete = document.getElementById('autocomplete-' + this.id)
+      autocomplete.style.display = 'none';
+      this.$emit('blur', event)
     },
     resizeTextarea() {
       var { autosize } = this
