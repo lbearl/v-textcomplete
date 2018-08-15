@@ -9,6 +9,7 @@
               :placeholder="placeholder"
               :rows="rows"
               :name="name"
+              :maxlength="maxlength"
               @blur="handleBlur"
               @focus="handleFocus"
               @keydown="keyEvent"
@@ -29,6 +30,7 @@
 import calcTextareaHeight from './calcTextareaHeight'
 import { default as getCaretCoordinates } from 'textarea-caret'
 import { default as keyEvent } from './keyEvent'
+import _ from 'lodash'
 
 export default {
   mixins: [keyEvent],
@@ -64,6 +66,10 @@ export default {
       type: Number,
       default: 2
     },
+    maxlength: {
+      type: Number,
+      default: 5000
+    }
   },
   data() {
     return {
@@ -119,9 +125,11 @@ export default {
 
       this.$emit('input', value)
     },
-    change() {
+    change: _.debounce(function() {
       let that = this
-      this.strategies.forEach((item) => {
+      console.log(that);
+      console.log(that.strategies)
+      that.strategies.forEach((item) => {
         let autocomplete = document.getElementById('autocomplete-' + that.id)
         let textarea = document.getElementById('v-textcomplete-' + that.id)
         let content = textarea.value.substring(0, textarea.selectionEnd)
@@ -186,7 +194,7 @@ export default {
         this.actived.value = this.list[0]
       }
       this.matched = []
-    },
+    }, 500),
     getElementOffset(element) {
       let rect = element.getBoundingClientRect()
       let {defaultView, documentElement} = element.ownerDocument
